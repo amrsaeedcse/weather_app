@@ -1,3 +1,4 @@
+import 'package:animated_floating_widget/animated_floating_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/controllers/page/pagecontrol_cubit.dart';
@@ -7,6 +8,7 @@ class AnimList extends StatefulWidget {
 
   @override
   State<AnimList> createState() => _AnimListState();
+  static double opacity = 0;
 }
 
 class _AnimListState extends State<AnimList> {
@@ -23,45 +25,58 @@ class _AnimListState extends State<AnimList> {
     Icon(Icons.ac_unit, size: 120, color: Colors.lightBlueAccent), // Snow / Ice
     Icon(Icons.blur_on, size: 120, color: Colors.blueGrey), // Mist / Fog / Haze
   ];
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PagecontrolCubit, PageController>(
       builder: (context, state) {
-        PageController pageController = state;
-        return PageView.builder(
-          controller: pageController,
-          itemCount: weatherIcons.length,
-          itemBuilder: (context, index) {
-            return AnimatedBuilder(
-              animation: pageController,
-              builder: (context, child) {
-                double currPage = 0;
+        return AnimatedOpacity(
+          duration: Duration(milliseconds: 500),
+          opacity: AnimList.opacity,
+          child: PageView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            controller: state,
+            itemCount: weatherIcons.length,
+            itemBuilder: (context, index) {
+              return AnimatedBuilder(
+                animation: state,
+                builder: (context, child) {
+                  double currPage = 0;
 
-                if (pageController.position.hasContentDimensions) {
-                  currPage =
-                      pageController.page ??
-                      pageController.initialPage.toDouble();
-                }
+                  if (state.position.hasContentDimensions) {
+                    currPage = state.page ?? state.initialPage.toDouble();
+                  }
 
-                final diff = index - currPage;
+                  final diff = index - currPage;
 
-                // خلي range بين 0.6 و 1.0 (فرق أوضح)
-                final scale = (1 - (diff.abs() * 0.4)).clamp(0.6, 1.0);
+                  final scale = (1 - (diff.abs() * 0.4)).clamp(0.6, 1.0);
 
-                // الترانسليت زي ما هو يخليه يطلع من تحت
-                final translate = Offset(0, diff.abs() * 60);
+                  final translate = Offset(0, diff.abs() * 60);
 
-                return Center(
-                  child: Transform.translate(
-                    offset: translate,
-                    child: Transform.scale(scale: scale, child: child),
-                  ),
-                );
-              },
-              child: weatherIcons[index],
-            );
-          },
+                  return Center(
+                    child: Transform.translate(
+                      offset: translate,
+                      child: Transform.scale(
+                        scale: scale,
+                        child: diff == 0
+                            ? FloatingWidget(
+                                duration: Duration(milliseconds: 1500),
+                                horizontalSpace: 40,
+                                direction:
+                                    FloatingDirection.topCenterToBottomCenter,
+                                beginOffset: Offset(0, -.3),
+                                endOffset: Offset(0, .3),
+                                reverseDuration: Duration(milliseconds: 1500),
+                                child: child!,
+                              )
+                            : child,
+                      ),
+                    ),
+                  );
+                },
+                child: weatherIcons[index],
+              );
+            },
+          ),
         );
       },
     );

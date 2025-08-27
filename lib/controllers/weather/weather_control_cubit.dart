@@ -8,6 +8,7 @@ part 'weather_control_state.dart';
 
 class WeatherControlCubit extends Cubit<WeatherControlState> {
   WeatherControlCubit() : super(WeatherControlInitial());
+  DateTime lastUpdate = DateTime.now();
 
   Future getWeather(String? name) async {
     String realName;
@@ -46,6 +47,7 @@ class WeatherControlCubit extends Cubit<WeatherControlState> {
         final responseBody = response.data as Map<String, dynamic>;
         WeatherModel weatherModel = WeatherModel.fromJson(responseBody);
         print(weatherModel.tempC);
+        lastUpdate = DateTime.now();
         emit(WeatherControlSuccess(WeatherModel.fromJson(responseBody)));
       } else {
         final responseBody = response.data as Map<String, dynamic>;

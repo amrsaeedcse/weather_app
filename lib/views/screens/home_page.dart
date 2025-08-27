@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:weather_app/views/widgets/anim_list.dart';
 import 'package:weather_app/views/widgets/search_form.dart';
 import 'package:weather_app/views/widgets/weather_card.dart';
@@ -7,7 +8,7 @@ import 'package:weather_app/views/widgets/weather_card.dart';
 import '../../helpers/theme/app_colors.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +22,7 @@ class HomePage extends StatelessWidget {
                 SizedBox(height: 60),
                 SearchForm(),
                 SizedBox(height: 30),
-                WeatherCard(),
+                Flexible(child: WeatherCard()),
               ],
             ),
             Positioned(

@@ -39,6 +39,8 @@ dependencies:
   dio: ^5.9.0
   flutter_bloc: ^9.1.1
   geolocator: ^14.0.2
+  animated_floating_widget: ^1.0.0
+  pull_to_refresh: ^2.0.0
 
 dev_dependencies:
   flutter_test:
